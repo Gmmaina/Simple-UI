@@ -39,6 +39,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import es.dmoral.toasty.Toasty
@@ -141,7 +142,9 @@ fun LoginScreen() {
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-        TextButton(onClick = {}) {
+        TextButton(onClick = {
+            TODO("ADD FORGOT PASSWORD BUTTON FUNCTIONALITY")
+        }) {
             Text(
                 text = "Forgot Password?",
                 fontSize = 20.sp,
@@ -180,7 +183,7 @@ fun LoginScreen() {
                     .clip(CircleShape)
                     .size(50.dp)
                     .clickable {
-
+                        TODO("SOCIAL LOGIN")
                     }
             )
             Image(
@@ -224,4 +227,10 @@ fun ErrorMessage(showError: Boolean){
 
         }
     }
+}
+
+@Preview
+@Composable
+private fun LoginScreenPreview() {
+    LoginScreen()
 }
