@@ -33,10 +33,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -55,6 +55,15 @@ fun SplashScreen(navController: NavHostController) {
         mutableStateOf("")
     }
     var confirmPassword by remember {
+        mutableStateOf("")
+    }
+    var showMessage by remember {
+        mutableStateOf(false)
+    }
+    var isSuccess by remember {
+        mutableStateOf(false)
+    }
+    var message by remember {
         mutableStateOf("")
     }
 
@@ -98,6 +107,13 @@ fun SplashScreen(navController: NavHostController) {
                 fontSize = 12.sp,
                 color = Color.White
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            if (showMessage) {
+                PopUpMessage(message = message, isSuccess = isSuccess)
+            }
+
             OutlinedTextField(
                 value = username, onValueChange = {
                     username = it
@@ -109,6 +125,10 @@ fun SplashScreen(navController: NavHostController) {
                         color = Color.White
                     )
                 },
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontSize = 24.sp
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
@@ -121,10 +141,13 @@ fun SplashScreen(navController: NavHostController) {
                 label = {
                     Text(
                         "Email Address",
-                        fontSize = 20.sp,
                         color = Color.White
                     )
                 },
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontSize = 24.sp
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
@@ -140,7 +163,11 @@ fun SplashScreen(navController: NavHostController) {
                         fontSize = 20.sp,
                         color = Color.White
                     )
-                }, visualTransformation = PasswordVisualTransformation(),
+                },
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontSize = 24.sp
+                ), visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
@@ -156,7 +183,11 @@ fun SplashScreen(navController: NavHostController) {
                         fontSize = 20.sp,
                         color = Color.White
                     )
-                }, visualTransformation = PasswordVisualTransformation(),
+                },
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontSize = 24.sp
+                ), visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
@@ -164,7 +195,15 @@ fun SplashScreen(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    TODO("ADD SIGN UP BUTTON FUNCTIONALITY")
+                    if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                        message = "Please fill all fields!"
+                        isSuccess = false
+                    } else {
+                        message = "Account created successfully!"
+                        isSuccess = true
+                        navController.navigate(AppRoutes.HomeScreen.route)
+                    }
+                    showMessage = true
                 },
                 shape = RoundedCornerShape(25.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
@@ -195,14 +234,15 @@ fun SplashScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     "Login",
-                    modifier = Modifier.clickable {},
+                    modifier = Modifier.clickable {
+                        navController.navigate(AppRoutes.LoginScreen.route)
+                    },
                     fontWeight = FontWeight.Light,
                     fontSize = 16.sp,
                     color = Color.Cyan,
                     textDecoration = TextDecoration.Underline
                 )
             }
-
 
             Text(
                 text = "Or sign up with?",
@@ -253,10 +293,4 @@ fun SplashScreen(navController: NavHostController) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun SplashScreenPreview() {
-    SplashScreen(navController)
 }

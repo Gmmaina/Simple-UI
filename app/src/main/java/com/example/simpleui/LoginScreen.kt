@@ -39,14 +39,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.delay
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
 
     var email by remember {
         mutableStateOf("")
@@ -60,7 +60,7 @@ fun LoginScreen() {
         mutableStateOf(false)
     }
 
-    if (showError){
+    if (showError) {
         LaunchedEffect(Unit) {
             delay(2000)
             showError = false
@@ -98,7 +98,7 @@ fun LoginScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-       ErrorMessage(showError)
+        ErrorMessage(showError)
 
         OutlinedTextField(
             value = email, onValueChange = {
@@ -122,11 +122,12 @@ fun LoginScreen() {
         Button(
             onClick = {
                 showError = email.isEmpty() || password.isEmpty()
-                if (email.isEmpty() || password.isEmpty()) {
-                    Toasty.error(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
-                } else {
+                if (email.isNotEmpty() && password.isNotEmpty()) {
                     Log.i("Credentials", "Email: $email Password: $password")
                     Toasty.success(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
+                    navController.navigate(AppRoutes.HomeScreen.route + "/$email")
+                } else {
+                    Toasty.error(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 }
             },
 
@@ -143,7 +144,11 @@ fun LoginScreen() {
 
         Spacer(modifier = Modifier.height(32.dp))
         TextButton(onClick = {
-            TODO("ADD FORGOT PASSWORD BUTTON FUNCTIONALITY")
+            if (email.isNotEmpty()) {
+                navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/$email")
+            } else {
+                navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/")
+            }
         }) {
             Text(
                 text = "Forgot Password?",
@@ -201,7 +206,7 @@ fun LoginScreen() {
 
 
 @Composable
-fun ErrorMessage(showError: Boolean){
+fun ErrorMessage(showError: Boolean) {
     AnimatedVisibility(
         visible = showError,
         enter = fadeIn(),
@@ -227,10 +232,4 @@ fun ErrorMessage(showError: Boolean){
 
         }
     }
-}
-
-@Preview
-@Composable
-private fun LoginScreenPreview() {
-    LoginScreen()
 }
