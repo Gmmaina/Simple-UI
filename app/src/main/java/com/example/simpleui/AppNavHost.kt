@@ -19,7 +19,7 @@ fun AppNavHost() {
             LoginScreen(navController)
         }
         composable(AppRoutes.SignUpScreen.route) {
-            SignUpScreen()
+            SignUpScreen(navController)
         }
         composable(AppRoutes.ForgotPasswordScreen.route + "/{email}") { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email") ?: ""
