@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.R
@@ -56,7 +57,6 @@ fun LoginScreen(navController: NavController) {
         mutableStateOf("")
     }
 
-    val coroutineScope = rememberCoroutineScope()
 
     var showMessage by remember {
         mutableStateOf(false)
@@ -70,180 +70,191 @@ fun LoginScreen(navController: NavController) {
     }
 
 
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.white)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(colorResource(R.color.WhiteSmoke))
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 32.dp)
+                .padding(start = 8.dp, top = 24.dp)
+                .align(Alignment.TopStart)
+                .zIndex(1f)
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back Icon",
                 tint = Color.Black,
                 modifier = Modifier
-                    .align(Alignment.CenterStart)
                     .size(32.dp)
-
                     .clickable {
                         navController.popBackStack()
                     }
             )
         }
 
-        Image(
-            painter = painterResource(R.drawable.avatar),
-            contentDescription = "Login",
+        Column(
             modifier = Modifier
-                .clip(CircleShape)
-                .size(200.dp)
-        )
-
-        Text(
-            text = "Welcome Back.",
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = "Sign in to your account.",
-            fontWeight = FontWeight.Light,
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        if (showMessage) {
-            PopUpMessage(message = message, isSuccess = isSuccess)
-        }
-
-        OutlinedTextField(
-            value = email, onValueChange = {
-                email = it
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(56.dp),
-            label = {
-                Text("Email Address")
-            },
-            textStyle = TextStyle(
-                fontSize = 20.sp,
-                color = Color.Black
-            )
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-        OutlinedTextField(
-            value = password, onValueChange = {
-                password = it
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(56.dp),
-            label = {
-                Text("Password")
-            },
-            textStyle = TextStyle(
-                fontSize = 20.sp,
-                color = Color.Black
-            ),
-            visualTransformation = PasswordVisualTransformation()
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    message = "Login Successful"
-                    navController.navigate(AppRoutes.HomeScreen.route + "/$email")
-                    isSuccess = true
-                } else {
-                    message = "Please fill all fields!"
-                }
-                showMessage = true
-            },
-
-            shape = RoundedCornerShape(30.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFFF6F22)
-            ),
-            modifier = Modifier
-                .height(56.dp)
-                .fillMaxWidth(0.8f)
+                .fillMaxSize()
+                .background(colorResource(R.color.white)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Sign In",
-                fontSize = 20.sp,
-                color = Color.White
-            )
-        }
 
-        Spacer(modifier = Modifier.height(10.dp))
-        TextButton(onClick = {
-            if (email.isNotEmpty()) {
-                navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/$email")
-            } else {
-                navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/")
+            Image(
+                painter = painterResource(R.drawable.avatar),
+                contentDescription = "Login",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(200.dp)
+            )
+
+            Text(
+                text = "Welcome Back.",
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "Sign in to your account.",
+                fontWeight = FontWeight.Light,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if (showMessage) {
+                PopUpMessage(message = message, isSuccess = isSuccess)
             }
-        }) {
-            Text(
-                text = "Forgot Password?",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Light
+
+            OutlinedTextField(
+                value = email, onValueChange = {
+                    email = it
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                label = {
+                    Text(
+                        "Email Address",
+                        fontSize = 20.sp
+                    )
+                },
+                textStyle = TextStyle(
+                    fontSize = 24.sp,
+                    color = Color.Black
+                )
             )
-        }
 
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = "Or sign in with",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Light,
-            color = Color.Gray
-        )
+            OutlinedTextField(
+                value = password, onValueChange = {
+                    password = it
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                label = {
+                    Text(
+                        "Password",
+                        fontSize = 20.sp
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+                    )
+                },
+                textStyle = TextStyle(
+                    fontSize = 24.sp,
+                    color = Color.Black
+                ),
+                visualTransformation = PasswordVisualTransformation()
+            )
 
+            Button(
+                onClick = {
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        message = "Login Successful"
+                        navController.navigate(AppRoutes.HomeScreen.route + "/$email")
+                        isSuccess = true
+                    } else {
+                        message = "Please fill all fields!"
+                    }
+                    showMessage = true
+                },
+
+                shape = RoundedCornerShape(25.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.DeepOrange)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .height(56.dp)
             ) {
-            Image(
-                painter = painterResource(R.drawable.faceboook),
-                contentDescription = "Facebook Login",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(50.dp)
-                    .clickable {
-                        TODO("SOCIAL LOGIN")
-                    }
+                Text(
+                    text = "Sign In",
+                    fontSize = 20.sp,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            TextButton(onClick = {
+                if (email.isNotEmpty()) {
+                    navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/$email")
+                } else {
+                    navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/")
+                }
+            }) {
+                Text(
+                    text = "Forgot Password?",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Light
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "Or sign in with",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Light,
+                color = Color.Gray
             )
-            Image(
-                painter = painterResource(R.drawable.google), contentDescription = "Google Login",
+
+            Row(
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .size(50.dp)
-                    .clickable {
-                        TODO("SOCIAL LOGIN")
-                    }
-            )
-            Image(
-                painter = painterResource(R.drawable.twitter), contentDescription = "Twitter Login",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(50.dp)
-                    .clickable {
-                        TODO("SOCIAL LOGIN")
-                    }
-            )
+                    .fillMaxWidth()
+                    .padding(30.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+
+                ) {
+                Image(
+                    painter = painterResource(R.drawable.faceboook),
+                    contentDescription = "Facebook Login",
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(50.dp)
+                        .clickable {
+                            TODO("SOCIAL LOGIN")
+                        }
+                )
+                Image(
+                    painter = painterResource(R.drawable.google), contentDescription = "Google Login",
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(50.dp)
+                        .clickable {
+                            TODO("SOCIAL LOGIN")
+                        }
+                )
+                Image(
+                    painter = painterResource(R.drawable.twitter), contentDescription = "Twitter Login",
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(50.dp)
+                        .clickable {
+                            TODO("SOCIAL LOGIN")
+                        }
+                )
+            }
         }
     }
+
 }
