@@ -1,4 +1,4 @@
-package com.example.simpleui
+package com.example.simpleui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +41,7 @@ fun ForgotPasswordScreen(preFilledEmail: String) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -78,7 +78,9 @@ fun ForgotPasswordScreen(preFilledEmail: String) {
 
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedButton(
-                onClick = {},
+                onClick = {
+
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)

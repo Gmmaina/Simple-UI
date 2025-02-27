@@ -1,4 +1,4 @@
-package com.example.simpleui
+package com.example.simpleui.navigation
 
 
 sealed class AppRoutes(val route : String){

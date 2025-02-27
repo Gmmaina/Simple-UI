@@ -1,4 +1,4 @@
-package com.example.simpleui
+package com.example.simpleui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.simpleui.navigation.AppRoutes
+import com.example.simpleui.R
+import com.example.simpleui.toast.PopUpMessage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(navController: NavHostController) {
@@ -68,6 +74,8 @@ fun SignUpScreen(navController: NavHostController) {
     var message by remember {
         mutableStateOf("")
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -202,8 +210,11 @@ fun SignUpScreen(navController: NavHostController) {
                         isSuccess = false
                     } else {
                         message = "Account created successfully!"
+                        coroutineScope.launch {
+                            delay(3000)
+                            navController.navigate(AppRoutes.HomeScreen.route)
+                        }
                         isSuccess = true
-                        navController.navigate(AppRoutes.HomeScreen.route)
                     }
                     showMessage = true
                 },

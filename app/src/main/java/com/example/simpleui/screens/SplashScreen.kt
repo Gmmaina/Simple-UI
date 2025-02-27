@@ -1,4 +1,4 @@
-package com.example.simpleui
+package com.example.simpleui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +19,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
+import com.example.simpleui.navigation.AppRoutes
+import com.example.simpleui.R
 import kotlinx.coroutines.delay
 
 @Composable
@@ -58,3 +62,11 @@ fun SplashScreen(navController: NavHostController) {
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun SplashScreenPreview() {
+    val navController = rememberNavController()
+    SplashScreen(navController)
+}
+

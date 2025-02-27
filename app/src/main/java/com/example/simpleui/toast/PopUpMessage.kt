@@ -1,4 +1,4 @@
-package com.example.simpleui
+package com.example.simpleui.toast
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

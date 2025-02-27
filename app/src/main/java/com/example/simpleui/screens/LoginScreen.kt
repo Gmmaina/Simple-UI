@@ -1,10 +1,5 @@
-package com.example.simpleui
+package com.example.simpleui.screens
 
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,30 +15,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.delay
+import com.example.simpleui.navigation.AppRoutes
+import com.example.simpleui.R
+import com.example.simpleui.toast.PopUpMessage
+
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -55,25 +56,47 @@ fun LoginScreen(navController: NavController) {
         mutableStateOf("")
     }
 
-    val context = LocalContext.current
-    var showError by remember {
+    val coroutineScope = rememberCoroutineScope()
+
+    var showMessage by remember {
         mutableStateOf(false)
     }
 
-    if (showError) {
-        LaunchedEffect(Unit) {
-            delay(2000)
-            showError = false
-        }
+    var isSuccess by remember {
+        mutableStateOf(false)
     }
+    var message by remember {
+        mutableStateOf("")
+    }
+
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.white)),
-        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back Icon",
+                tint = Color.Black,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .size(32.dp)
+
+                    .clickable {
+                        navController.popBackStack()
+                    }
+            )
+        }
+
         Image(
             painter = painterResource(R.drawable.avatar),
             contentDescription = "Login",
@@ -82,7 +105,6 @@ fun LoginScreen(navController: NavController) {
                 .size(200.dp)
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "Welcome Back.",
             fontWeight = FontWeight.Bold,
@@ -98,51 +120,73 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        ErrorMessage(showError)
+        if (showMessage) {
+            PopUpMessage(message = message, isSuccess = isSuccess)
+        }
 
         OutlinedTextField(
             value = email, onValueChange = {
                 email = it
             },
-            modifier = Modifier.fillMaxWidth(0.8f),
-            label = { Text("Email Address") })
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(56.dp),
+            label = {
+                Text("Email Address")
+            },
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                color = Color.Black
+            )
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = password, onValueChange = {
                 password = it
             },
-            modifier = Modifier.fillMaxWidth(0.8f),
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(56.dp),
             label = {
                 Text("Password")
-            }, visualTransformation = PasswordVisualTransformation()
+            },
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                color = Color.Black
+            ),
+            visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                showError = email.isEmpty() || password.isEmpty()
                 if (email.isNotEmpty() && password.isNotEmpty()) {
-                    Log.i("Credentials", "Email: $email Password: $password")
-                    Toasty.success(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
+                    message = "Login Successful"
                     navController.navigate(AppRoutes.HomeScreen.route + "/$email")
+                    isSuccess = true
                 } else {
-                    Toasty.error(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                    message = "Please fill all fields!"
                 }
+                showMessage = true
             },
 
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFF6F22)
+            ),
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .height(50.dp)
+                .height(56.dp)
+                .fillMaxWidth(0.8f)
         ) {
             Text(
                 text = "Sign In",
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = Color.White
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         TextButton(onClick = {
             if (email.isNotEmpty()) {
                 navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/$email")
@@ -179,7 +223,7 @@ fun LoginScreen(navController: NavController) {
                     .clip(CircleShape)
                     .size(50.dp)
                     .clickable {
-
+                        TODO("SOCIAL LOGIN")
                     }
             )
             Image(
@@ -197,39 +241,9 @@ fun LoginScreen(navController: NavController) {
                     .clip(CircleShape)
                     .size(50.dp)
                     .clickable {
-
+                        TODO("SOCIAL LOGIN")
                     }
             )
-        }
-    }
-}
-
-
-@Composable
-fun ErrorMessage(showError: Boolean) {
-    AnimatedVisibility(
-        visible = showError,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .height(50.dp)
-                .background(
-                    color = Color.Red.copy(0.7f),
-                ),
-
-            ) {
-            Text(
-                text = "Please fill all the fields!",
-                color = Color.White,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.Center)
-            )
-
         }
     }
 }
