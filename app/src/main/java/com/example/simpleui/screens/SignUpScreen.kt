@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +46,8 @@ import androidx.navigation.NavHostController
 import com.example.simpleui.R
 import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.toast.PopUpMessage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(navController: NavHostController) {
@@ -71,6 +74,8 @@ fun SignUpScreen(navController: NavHostController) {
     var message by remember {
         mutableStateOf("")
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -185,8 +190,10 @@ fun SignUpScreen(navController: NavHostController) {
                     isSuccess = false
                 } else {
                     message = "Account created successfully!"
+                    coroutineScope.launch {
+                        signUpCheck(navController,email)
+                    }
                     isSuccess = true
-                    navController.navigate(AppRoutes.HomeScreen.route + "/$email")
                 }
                 showMessage = true
             },
@@ -274,6 +281,11 @@ fun SignUpScreen(navController: NavHostController) {
             )
         }
     }
+}
+
+suspend fun signUpCheck(navController: NavHostController, email: String){
+    delay(1000)
+    navController.navigate(AppRoutes.HomeScreen.route + "/$email")
 }
 
 @Preview

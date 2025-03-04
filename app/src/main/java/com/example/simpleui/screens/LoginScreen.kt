@@ -24,9 +24,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +46,8 @@ import androidx.navigation.NavController
 import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.R
 import com.example.simpleui.toast.PopUpMessage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -67,6 +71,8 @@ fun LoginScreen(navController: NavController) {
     var message by remember {
         mutableStateOf("")
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
 
     Box(
@@ -171,7 +177,9 @@ fun LoginScreen(navController: NavController) {
                 onClick = {
                     if (email.isNotEmpty() && password.isNotEmpty()) {
                         message = "Login Successful"
-                        navController.navigate(AppRoutes.HomeScreen.route + "/$email")
+                        coroutineScope.launch {
+                            loginCheck(navController,email)
+                        }
                         isSuccess = true
                     } else {
                         message = "Please fill all fields!"
@@ -256,4 +264,9 @@ fun LoginScreen(navController: NavController) {
         }
     }
 
+}
+
+suspend fun loginCheck(navController: NavController, email: String){
+    delay(1000)
+    navController.navigate(AppRoutes.HomeScreen.route + "/$email")
 }
