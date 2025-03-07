@@ -10,5 +10,7 @@
 
     <color name="DeepOrange">#FF6F22</color>
     <color name="WhiteSmoke">#F5F5F5</color>
+    <color name="background_color">#F5F5F5</color>
+    <color name="green">#FF00FF00</color>
 
 </resources>

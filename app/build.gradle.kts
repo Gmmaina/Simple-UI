@@ -60,4 +60,9 @@ dependencies {
 
     implementation("com.github.GrenderG:Toasty:1.5.2")
     implementation(libs.androidx.navigation.compose)
+    implementation (libs.accompanist.systemuicontroller)
+    implementation (libs.material3)
+    implementation (libs.accompanist.pager)
+    implementation (libs.accompanist.pager.indicators)
+
 }

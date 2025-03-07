@@ -8,23 +8,28 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,9 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.R
+import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.toast.PopUpMessage
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -74,17 +80,29 @@ fun LoginScreen(navController: NavController) {
 
     val coroutineScope = rememberCoroutineScope()
 
+    val backgroundColor = colorResource(R.color.WhiteSmoke)
+
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = true
+        )
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.WhiteSmoke))
+            .background(backgroundColor)
+            .padding(start = 10.dp, end = 10.dp)
+            .windowInsetsPadding(WindowInsets.systemBars)
     ) {
         Box(
             modifier = Modifier
-                .padding(start = 8.dp, top = 24.dp)
                 .align(Alignment.TopStart)
                 .zIndex(1f)
+                .padding(top = 20.dp)
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -100,8 +118,7 @@ fun LoginScreen(navController: NavController) {
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(R.color.white)),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -178,7 +195,7 @@ fun LoginScreen(navController: NavController) {
                     if (email.isNotEmpty() && password.isNotEmpty()) {
                         message = "Login Successful"
                         coroutineScope.launch {
-                            loginCheck(navController,email)
+                            loginCheck(navController, email)
                         }
                         isSuccess = true
                     } else {
@@ -195,6 +212,7 @@ fun LoginScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(8.dp)
                     .height(56.dp)
+                    .imePadding()
             ) {
                 Text(
                     text = "Sign In",
@@ -218,12 +236,21 @@ fun LoginScreen(navController: NavController) {
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Or sign in with",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Light,
-                color = Color.Gray
-            )
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                HorizontalDivider(Modifier.weight(1f))
+                Text(
+                    text = "Or sign in with",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Light,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                )
+                HorizontalDivider(Modifier.weight(1f))
+            }
+
 
             Row(
                 modifier = Modifier
@@ -243,7 +270,8 @@ fun LoginScreen(navController: NavController) {
                         }
                 )
                 Image(
-                    painter = painterResource(R.drawable.google), contentDescription = "Google Login",
+                    painter = painterResource(R.drawable.google),
+                    contentDescription = "Google Login",
                     modifier = Modifier
                         .clip(CircleShape)
                         .size(50.dp)
@@ -252,7 +280,8 @@ fun LoginScreen(navController: NavController) {
                         }
                 )
                 Image(
-                    painter = painterResource(R.drawable.twitter), contentDescription = "Twitter Login",
+                    painter = painterResource(R.drawable.twitter),
+                    contentDescription = "Twitter Login",
                     modifier = Modifier
                         .clip(CircleShape)
                         .size(50.dp)
@@ -266,7 +295,7 @@ fun LoginScreen(navController: NavController) {
 
 }
 
-suspend fun loginCheck(navController: NavController, email: String){
+suspend fun loginCheck(navController: NavController, email: String) {
     delay(1000)
     navController.navigate(AppRoutes.HomeScreen.route + "/$email")
 }

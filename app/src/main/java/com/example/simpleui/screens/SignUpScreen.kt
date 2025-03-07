@@ -8,21 +8,27 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +52,7 @@ import androidx.navigation.NavHostController
 import com.example.simpleui.R
 import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.toast.PopUpMessage
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -77,10 +84,22 @@ fun SignUpScreen(navController: NavHostController) {
 
     val coroutineScope = rememberCoroutineScope()
 
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = true
+        )
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.WhiteSmoke))
+            .padding(start = 10.dp, end = 10.dp)
+            .windowInsetsPadding(WindowInsets.systemBars)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -191,7 +210,7 @@ fun SignUpScreen(navController: NavHostController) {
                 } else {
                     message = "Account created successfully!"
                     coroutineScope.launch {
-                        signUpCheck(navController,email)
+                        signUpCheck(navController, email)
                     }
                     isSuccess = true
                 }
@@ -234,13 +253,24 @@ fun SignUpScreen(navController: NavHostController) {
             )
         }
 
-        Text(
-            text = "Or sign up with?",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Light
-        )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(Modifier.height(20.dp))
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            HorizontalDivider(Modifier.weight(1f))
+            Text(
+                text = "Or sign up with?",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Light,
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+            )
+            HorizontalDivider(Modifier.weight(1f))
+        }
+
+
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -283,7 +313,7 @@ fun SignUpScreen(navController: NavHostController) {
     }
 }
 
-suspend fun signUpCheck(navController: NavHostController, email: String){
+suspend fun signUpCheck(navController: NavHostController, email: String) {
     delay(1000)
     navController.navigate(AppRoutes.HomeScreen.route + "/$email")
 }
