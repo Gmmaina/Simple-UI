@@ -127,16 +127,17 @@ fun SplashScreen(navController: NavHostController) {
             PagerIndicatorWithButtons(
                 pagerState = pagerState,
                 onNext = {
-                    if (pagerState.currentPage == onboardingPage.size - 1) {
-                        navController.navigate(AppRoutes.SignUpScreen.route) {
-                            popUpTo(AppRoutes.SplashScreen.route) { inclusive = true }
-                        }
-                    } else {
-                        scope.launch {
+                    scope.launch{
+                        if (pagerState.currentPage == onboardingPage.size - 1) {
+                            navController.navigate(AppRoutes.SignUpScreen.route) {
+                                popUpTo(AppRoutes.SplashScreen.route) { inclusive = true }
+                            }
+                        } else {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     }
                 },
+
                 onPrevious = {
                     scope.launch {
                         pagerState.animateScrollToPage(pagerState.currentPage - 1)

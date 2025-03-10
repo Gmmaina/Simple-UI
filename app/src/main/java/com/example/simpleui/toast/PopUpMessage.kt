@@ -20,7 +20,7 @@ fun PopUpMessage(message: String, isSuccess: Boolean) {
                 .fillMaxWidth()
                 .padding(8.dp)
                 .height(50.dp)
-                .background(if (isSuccess) Color.Green.copy(0.7f) else Color.Red.copy(0.7f))
+                .background(if (isSuccess) Color(0xFF4CAF50) else Color(0xFFD32F2F)) // Green for success, Red for error
         ){
             Text(
                 text = message,

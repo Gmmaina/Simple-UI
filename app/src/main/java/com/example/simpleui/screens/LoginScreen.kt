@@ -30,55 +30,31 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.simpleui.R
 import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.toast.PopUpMessage
+import com.example.simpleui.viewmodel.LoginViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(navController: NavController) {
-
-    var email by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
-
-
-    var showMessage by remember {
-        mutableStateOf(false)
-    }
-
-    var isSuccess by remember {
-        mutableStateOf(false)
-    }
-    var message by remember {
-        mutableStateOf("")
-    }
-
-    val coroutineScope = rememberCoroutineScope()
+fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
 
     val backgroundColor = colorResource(R.color.WhiteSmoke)
 
@@ -146,13 +122,17 @@ fun LoginScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (showMessage) {
-                PopUpMessage(message = message, isSuccess = isSuccess)
+            if (loginViewModel.showMessage.value) {
+                PopUpMessage(
+                    message = loginViewModel.message.value,
+                    isSuccess = loginViewModel.isSuccess.value
+                )
             }
 
             OutlinedTextField(
-                value = email, onValueChange = {
-                    email = it
+                value = loginViewModel.email.value,
+                onValueChange = {
+                    loginViewModel.onEmailChange(it)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -170,8 +150,9 @@ fun LoginScreen(navController: NavController) {
             )
 
             OutlinedTextField(
-                value = password, onValueChange = {
-                    password = it
+                value = loginViewModel.password.value,
+                onValueChange = {
+                    loginViewModel.onPasswordChange(it)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -192,23 +173,17 @@ fun LoginScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    if (email.isNotEmpty() && password.isNotEmpty()) {
-                        message = "Login Successful"
-                        coroutineScope.launch {
-                            loginCheck(navController, email)
-                        }
-                        isSuccess = true
-                    } else {
-                        message = "Please fill all fields!"
-                    }
-                    showMessage = true
+                    loginViewModel.login(
+                        navController,
+                        loginViewModel.email.value,
+                        loginViewModel.password.value
+                    )
                 },
 
                 shape = RoundedCornerShape(25.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.DeepOrange)
-                ),
-                modifier = Modifier
+                ), modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
                     .height(56.dp)
@@ -222,8 +197,8 @@ fun LoginScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(10.dp))
             TextButton(onClick = {
-                if (email.isNotEmpty()) {
-                    navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/$email")
+                if (loginViewModel.email.value.isNotEmpty()) {
+                    navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/${loginViewModel.email.value}")
                 } else {
                     navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/")
                 }
@@ -236,10 +211,10 @@ fun LoginScreen(navController: NavController) {
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 HorizontalDivider(Modifier.weight(1f))
                 Text(
                     text = "Or sign in with",
@@ -295,7 +270,8 @@ fun LoginScreen(navController: NavController) {
 
 }
 
-suspend fun loginCheck(navController: NavController, email: String) {
-    delay(1000)
-    navController.navigate(AppRoutes.HomeScreen.route + "/$email")
+@Preview
+@Composable
+private fun LoginPreview() {
+    LoginScreen(navController = NavController(LocalContext.current))
 }
