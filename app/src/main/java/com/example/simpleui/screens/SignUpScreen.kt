@@ -27,6 +27,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -48,11 +49,12 @@ import androidx.navigation.NavHostController
 import com.example.simpleui.R
 import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.toast.PopUpMessage
-import com.example.simpleui.viewmodel.SignUpViewModel
+import com.example.simpleui.viewmodel.UserViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.delay
 
 @Composable
-fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewModel = viewModel()) {
+fun SignUpScreen(navController: NavHostController, userViewModel: UserViewModel = viewModel()) {
 
     rememberCoroutineScope()
 
@@ -64,6 +66,7 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
             darkIcons = true
         )
     }
+
 
 
     Column(
@@ -98,16 +101,17 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        if (signUpViewModel.message.value.isNotEmpty()) {
+        if (userViewModel.signUpMessage.isNotEmpty()) {
             PopUpMessage(
-                message = signUpViewModel.message.value,
-                isSuccess = signUpViewModel.message.value == "Account created Successfully!"
+                message = userViewModel.signUpMessage,
+                isSuccess = userViewModel.isSuccess
             )
         }
 
         OutlinedTextField(
-            value = signUpViewModel.name, onValueChange = {
-                signUpViewModel.onNameChange(it)
+            value = userViewModel.userName,
+            onValueChange = {
+                userViewModel.onNameChange(it)
             },
             label = {
                 Text(
@@ -124,8 +128,9 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
         )
 
         OutlinedTextField(
-            value = signUpViewModel.email, onValueChange = {
-                signUpViewModel.onEmailChange(it)
+            value = userViewModel.email,
+            onValueChange = {
+                userViewModel.onEmailChange(it)
             },
             label = {
                 Text(
@@ -142,8 +147,9 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
         )
 
         OutlinedTextField(
-            value = signUpViewModel.password, onValueChange = {
-                signUpViewModel.onPasswordChange(it)
+            value = userViewModel.password,
+            onValueChange = {
+                userViewModel.onPasswordChange(it)
             },
             label = {
                 Text(
@@ -160,8 +166,9 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
         )
 
         OutlinedTextField(
-            value = signUpViewModel.confirmPassword, onValueChange = {
-                signUpViewModel.onConfirmPasswordChange(it)
+            value = userViewModel.confirmPassword,
+            onValueChange = {
+                userViewModel.onConfirmPasswordChange(it)
             },
             label = {
                 Text(
@@ -179,7 +186,7 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
 
         Button(
             onClick = {
-                signUpViewModel.signUp(navController)
+                userViewModel.addUser(navController)
             },
             shape = RoundedCornerShape(25.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.DeepOrange)),

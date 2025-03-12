@@ -6,20 +6,29 @@ import com.example.simpleui.data.UserDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserRepository (private val userDao: UserDao){
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
     val userList: LiveData<List<User>> = userDao.getAll()
 
-    fun addUser(user: User){
-        coroutineScope.launch(Dispatchers.IO) {
-            userDao.addUser(user)
+    suspend fun addUser(user: User): String {
+       return withContext(Dispatchers.IO) {
+           val existingUser = userDao.getUserByEmailOrUsername(user.email, user.username)
+           if (existingUser != null) {
+               throw IllegalArgumentException("Email or username already exists")
+           }
+           userDao.addUser(user)
+           return@withContext "Account created Successfully!"
         }
     }
 
-    fun deleteUser(id: Int){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun deleteUser(id: Int){
+        withContext(Dispatchers.IO) {
             userDao.delete(id)
         }
+    }
+
+    suspend fun login(email: String, password: String): User? {
+        return userDao.login(email,password)
     }
 }

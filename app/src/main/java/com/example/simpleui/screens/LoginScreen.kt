@@ -49,12 +49,12 @@ import androidx.navigation.NavController
 import com.example.simpleui.R
 import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.toast.PopUpMessage
-import com.example.simpleui.viewmodel.LoginViewModel
+import com.example.simpleui.viewmodel.UserViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
-fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(navController: NavController, loginViewModel: UserViewModel = viewModel()) {
 
     val backgroundColor = colorResource(R.color.WhiteSmoke)
 
@@ -122,10 +122,10 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (loginViewModel.message.value.isNotEmpty()) {
+            if (loginViewModel.loginMessage.isNotEmpty()) {
                 PopUpMessage(
-                    message = loginViewModel.message.value,
-                    isSuccess = loginViewModel.message.value == "Logged in Successfully"
+                    message = loginViewModel.loginMessage,
+                    isSuccess = loginViewModel.isSuccess
                 )
             }
 

@@ -3,6 +3,7 @@ package com.example.simpleui.data
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
@@ -10,13 +11,16 @@ interface UserDao {
     @Query("SELECT * FROM users")
     fun getAll(): LiveData<List<User>>
 
-    @Query("SELECT * FROM users WHERE Userid = :id")
-    fun getById(id: Int): LiveData<User>
+   @Query("SELECT * FROM users WHERE email = :email OR username = :username LIMIT 1")
+    fun getUserByEmailOrUsername(email: String, username: String): User?
 
-    @Insert
-    fun addUser(user: User)
+    @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
+    fun login(email: String, password: String): User?
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun addUser(user: User)
 
     @Query("DELETE FROM users WHERE Userid = :id")
-    fun delete(id: Int)
+    suspend fun delete(id: Int)
 
 }
