@@ -1,7 +1,10 @@
 package com.example.simpleui.viewmodel
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -11,45 +14,53 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LoginViewModel: ViewModel() {
-    private val _email = mutableStateOf("")
-    val email: State<String> = _email
+    var email by mutableStateOf("")
+        private set
 
-    private val _password = mutableStateOf("")
-    val password: State<String> = _password
-
-
-    private val _isSuccess = mutableStateOf(false)
-    val isSuccess: State<Boolean> = _isSuccess
+    var password by mutableStateOf("")
+        private set
 
 
     private val _message = mutableStateOf("")
     val message: State<String> = _message
 
-    private val _showMessage = mutableStateOf(false)
-    val showMessage: State<Boolean> = _showMessage
 
     fun onEmailChange(newEmail: String){
-        _email.value = newEmail
+        email = newEmail
     }
 
     fun onPasswordChange(newPassword: String){
-        _password.value = newPassword
+        password = newPassword
     }
 
-    fun login(navController: NavController, email: String, password: String) {
-        if( email.isNotEmpty() && password.isNotEmpty()) {
-            _message.value = "Logged in successfully!"
-            _isSuccess.value = true
-            _showMessage.value = true
+    fun login(navController: NavController) {
+        viewModelScope.launch {
+            try {
+                // Check if fields are empty
+                if (email.isBlank() || password.isBlank()){
+                    throw IllegalArgumentException("Please fill all fields.")
+                }
+                // Validate email format with simple regex
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                    throw IllegalArgumentException("Invalid email format")
+                }
 
-            viewModelScope.launch {
+                // Simulate authentication delay
                 delay(1500)
-                navController.navigate(AppRoutes.HomeScreen.route + "/${_email.value}")
+
+                // Simulated successful Login
+                _message.value = "Logged in Successfully"
+                navController.navigate(AppRoutes.HomeScreen.route + "/$email"){
+                    popUpTo(AppRoutes.LoginScreen.route) {
+                        inclusive = true
+                    }
+                }
+
+            }catch (e: IllegalArgumentException){
+                _message.value = e.message ?: "An error occurred"
+            }catch (e: Exception){
+                _message.value = "Something went wrong. Please try again."
             }
-        } else {
-            _message.value = "Please fill all fields!"
-            _isSuccess.value = false
-            _showMessage.value = true
         }
     }
 }

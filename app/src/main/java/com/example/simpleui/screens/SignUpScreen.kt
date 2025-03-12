@@ -23,17 +23,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,41 +43,18 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.simpleui.R
 import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.toast.PopUpMessage
+import com.example.simpleui.viewmodel.SignUpViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(navController: NavHostController) {
+fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewModel = viewModel()) {
 
-    var username by remember {
-        mutableStateOf("")
-    }
-    var email by remember {
-        mutableStateOf("")
-    }
-
-    var password by remember {
-        mutableStateOf("")
-    }
-    var confirmPassword by remember {
-        mutableStateOf("")
-    }
-    var showMessage by remember {
-        mutableStateOf(false)
-    }
-    var isSuccess by remember {
-        mutableStateOf(false)
-    }
-    var message by remember {
-        mutableStateOf("")
-    }
-
-    val coroutineScope = rememberCoroutineScope()
+    rememberCoroutineScope()
 
     val systemUiController = rememberSystemUiController()
 
@@ -126,13 +98,16 @@ fun SignUpScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        if (showMessage) {
-            PopUpMessage(message = message, isSuccess = isSuccess)
+        if (signUpViewModel.message.value.isNotEmpty()) {
+            PopUpMessage(
+                message = signUpViewModel.message.value,
+                isSuccess = signUpViewModel.message.value == "Account created Successfully!"
+            )
         }
 
         OutlinedTextField(
-            value = username, onValueChange = {
-                username = it
+            value = signUpViewModel.name, onValueChange = {
+                signUpViewModel.onNameChange(it)
             },
             label = {
                 Text(
@@ -149,8 +124,8 @@ fun SignUpScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(
-            value = email, onValueChange = {
-                email = it
+            value = signUpViewModel.email, onValueChange = {
+                signUpViewModel.onEmailChange(it)
             },
             label = {
                 Text(
@@ -167,8 +142,8 @@ fun SignUpScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(
-            value = password, onValueChange = {
-                password = it
+            value = signUpViewModel.password, onValueChange = {
+                signUpViewModel.onPasswordChange(it)
             },
             label = {
                 Text(
@@ -185,8 +160,8 @@ fun SignUpScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(
-            value = confirmPassword, onValueChange = {
-                confirmPassword = it
+            value = signUpViewModel.confirmPassword, onValueChange = {
+                signUpViewModel.onConfirmPasswordChange(it)
             },
             label = {
                 Text(
@@ -204,17 +179,7 @@ fun SignUpScreen(navController: NavHostController) {
 
         Button(
             onClick = {
-                if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                    message = "Please fill all fields!"
-                    isSuccess = false
-                } else {
-                    message = "Account created successfully!"
-                    coroutineScope.launch {
-                        signUpCheck(navController, email)
-                    }
-                    isSuccess = true
-                }
-                showMessage = true
+                signUpViewModel.signUp(navController)
             },
             shape = RoundedCornerShape(25.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.DeepOrange)),
@@ -311,11 +276,6 @@ fun SignUpScreen(navController: NavHostController) {
             )
         }
     }
-}
-
-suspend fun signUpCheck(navController: NavHostController, email: String) {
-    delay(1000)
-    navController.navigate(AppRoutes.HomeScreen.route + "/$email")
 }
 
 @Preview

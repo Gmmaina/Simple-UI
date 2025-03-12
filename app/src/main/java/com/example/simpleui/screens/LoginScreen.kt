@@ -122,15 +122,15 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (loginViewModel.showMessage.value) {
+            if (loginViewModel.message.value.isNotEmpty()) {
                 PopUpMessage(
                     message = loginViewModel.message.value,
-                    isSuccess = loginViewModel.isSuccess.value
+                    isSuccess = loginViewModel.message.value == "Logged in Successfully"
                 )
             }
 
             OutlinedTextField(
-                value = loginViewModel.email.value,
+                value = loginViewModel.email,
                 onValueChange = {
                     loginViewModel.onEmailChange(it)
                 },
@@ -150,7 +150,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
             )
 
             OutlinedTextField(
-                value = loginViewModel.password.value,
+                value = loginViewModel.password,
                 onValueChange = {
                     loginViewModel.onPasswordChange(it)
                 },
@@ -173,11 +173,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
             Button(
                 onClick = {
-                    loginViewModel.login(
-                        navController,
-                        loginViewModel.email.value,
-                        loginViewModel.password.value
-                    )
+                    loginViewModel.login(navController)
                 },
 
                 shape = RoundedCornerShape(25.dp),
@@ -187,7 +183,6 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                     .fillMaxWidth()
                     .padding(8.dp)
                     .height(56.dp)
-                    .imePadding()
             ) {
                 Text(
                     text = "Sign In",
@@ -197,8 +192,8 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
             Spacer(modifier = Modifier.height(10.dp))
             TextButton(onClick = {
-                if (loginViewModel.email.value.isNotEmpty()) {
-                    navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/${loginViewModel.email.value}")
+                if (loginViewModel.email.isNotEmpty()) {
+                    navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/${loginViewModel.email}")
                 } else {
                     navController.navigate(AppRoutes.ForgotPasswordScreen.route + "/")
                 }

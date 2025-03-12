@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -64,5 +65,11 @@ dependencies {
     implementation (libs.material3)
     implementation (libs.accompanist.pager)
     implementation (libs.accompanist.pager.indicators)
+
+    ksp(libs.room.compiler)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+
+    annotationProcessor(libs.room.compiler)
 
 }
