@@ -1,10 +1,11 @@
 package com.example.simpleui.navigation
 
-import android.graphics.Color
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.simpleui.screens.AdminDashboard
 import com.example.simpleui.screens.ForgotPasswordScreen
 import com.example.simpleui.screens.HomeScreen
 import com.example.simpleui.screens.LoginScreen
@@ -34,6 +35,9 @@ fun AppNavHost() {
         composable(AppRoutes.HomeScreen.route + "/{email}") { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email") ?: ""
             HomeScreen(email)
+        }
+        composable(AppRoutes.AdminDashboard.route) {
+            AdminDashboard(viewModel = viewModel())
         }
     }
 }

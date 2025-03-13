@@ -14,14 +14,14 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PopUpMessage(message: String, isSuccess: Boolean) {
-    if (message.isNotEmpty()){
+    if (message.isNotEmpty()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .height(50.dp)
                 .background(if (isSuccess) Color(0xFF4CAF50) else Color(0xFFD32F2F)) // Green for success, Red for error
-        ){
+        ) {
             Text(
                 text = message,
                 color = Color.White,

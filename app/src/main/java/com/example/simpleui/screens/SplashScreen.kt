@@ -1,6 +1,5 @@
 package com.example.simpleui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +49,7 @@ fun SplashScreen(navController: NavHostController) {
     val pagerState = rememberPagerState(pageCount = { onboardingPage.size })
     val scope = rememberCoroutineScope()
 
-    val context = LocalContext.current
+    LocalContext.current
     // Auto-scroll logic
     LaunchedEffect(pagerState.currentPage) {
         while (pagerState.currentPage < onboardingPage.size - 1) {
@@ -81,7 +80,7 @@ fun SplashScreen(navController: NavHostController) {
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding( top = 16.dp)
+                .padding(top = 16.dp)
                 .zIndex(1f)
         ) {
             Text(text = "Skip", color = Color.Black)
@@ -112,7 +111,8 @@ fun SplashScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(pagerState.pageCount) { iteration ->
-                    val color = if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                    val color =
+                        if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
                     Box(
                         modifier = Modifier
                             .padding(2.dp)
@@ -127,7 +127,7 @@ fun SplashScreen(navController: NavHostController) {
             PagerIndicatorWithButtons(
                 pagerState = pagerState,
                 onNext = {
-                    scope.launch{
+                    scope.launch {
                         if (pagerState.currentPage == onboardingPage.size - 1) {
                             navController.navigate(AppRoutes.SignUpScreen.route) {
                                 popUpTo(AppRoutes.SplashScreen.route) { inclusive = true }

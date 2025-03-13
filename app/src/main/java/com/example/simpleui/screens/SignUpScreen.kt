@@ -27,7 +27,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -51,7 +50,6 @@ import com.example.simpleui.navigation.AppRoutes
 import com.example.simpleui.toast.PopUpMessage
 import com.example.simpleui.viewmodel.UserViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.delay
 
 @Composable
 fun SignUpScreen(navController: NavHostController, userViewModel: UserViewModel = viewModel()) {

@@ -11,11 +11,11 @@ interface UserDao {
     @Query("SELECT * FROM users")
     fun getAll(): LiveData<List<User>>
 
-   @Query("SELECT * FROM users WHERE email = :email OR username = :username LIMIT 1")
+    @Query("SELECT * FROM users WHERE email = :email OR username = :username LIMIT 1")
     fun getUserByEmailOrUsername(email: String, username: String): User?
 
     @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
-    fun login(email: String, password: String): User?
+    suspend fun login(email: String, password: String): User?
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun addUser(user: User)

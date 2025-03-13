@@ -21,7 +21,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -59,16 +60,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("com.github.GrenderG:Toasty:1.5.2")
     implementation(libs.androidx.navigation.compose)
     implementation (libs.accompanist.systemuicontroller)
-    implementation (libs.material3)
     implementation (libs.accompanist.pager)
-    implementation (libs.accompanist.pager.indicators)
 
     ksp(libs.room.compiler)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.androidx.runtime.livedata)
+
 
     annotationProcessor(libs.room.compiler)
 

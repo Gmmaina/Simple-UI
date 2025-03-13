@@ -1,7 +1,6 @@
 package com.example.simpleui.viewmodel
 
 import android.app.Application
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -60,12 +59,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
             isSuccess = false
             return
         }
-        if (password.length < 6){
+        if (password.length < 6) {
             signUpMessage = "Password must be at least 6 characters"
             isSuccess = false
             return
         }
-        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             signUpMessage = "Invalid email address"
             isSuccess = false
             return
@@ -77,48 +76,61 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         viewModelScope.launch {
-            try{
-                val result = repository.addUser(User(username = userName, email = email, password = password))
+            try {
+                val result = repository.addUser(
+                    User(
+                        username = userName,
+                        email = email,
+                        password = password
+                    )
+                )
                 signUpMessage = result
                 isSuccess = result == "Account created Successfully!"
 
-                if (isSuccess){
+                if (isSuccess) {
                     delay(2000)
-                    navController.navigate(AppRoutes.HomeScreen.route + "/${email}"){
-                        popUpTo(AppRoutes.LoginScreen.route){
+                    navController.navigate(AppRoutes.HomeScreen.route + "/${email}") {
+                        popUpTo(AppRoutes.LoginScreen.route) {
                             inclusive = true
                         }
                     }
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 signUpMessage = e.message ?: "Error occurred"
+            } catch (e: IllegalArgumentException) {
+                signUpMessage = e.message ?: "Something went wrong. please try again."
             }
         }
     }
 
-    fun login(navController: NavController){
-        if(email.isEmpty() || password.isEmpty()){
+    fun login(navController: NavController) {
+        if (email.isEmpty() || password.isEmpty()) {
             loginMessage = "Please fill in all fields"
             isSuccess = false
             return
         }
         viewModelScope.launch {
             val user = repository.login(email, password)
-            if (user != null){
+            if (user != null) {
                 loginMessage = "Login Successful"
                 isSuccess = true
                 delay(2000)
-                navController.navigate(AppRoutes.HomeScreen.route + "/${user.email}"){
-                    popUpTo(AppRoutes.LoginScreen.route){
+                navController.navigate(AppRoutes.AdminDashboard.route) {
+                    popUpTo(AppRoutes.LoginScreen.route) {
                         inclusive = true
                     }
                 }
-            }else{
+            } else {
                 loginMessage = "Invalid email or password"
                 isSuccess = false
             }
         }
     }
+
+    fun getUsers(): LiveData<List<User>> {
+        return userList
+    }
+
     fun deleteUser(id: Int) {
         viewModelScope.launch {
             repository.deleteUser(id)
