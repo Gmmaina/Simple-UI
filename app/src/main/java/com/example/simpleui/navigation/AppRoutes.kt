@@ -8,4 +8,6 @@ sealed class AppRoutes(val route: String) {
     object ForgotPasswordScreen : AppRoutes("forgotPasswordScreen")
     object HomeScreen : AppRoutes("homeScreen")
     object AdminDashboard : AppRoutes("adminDashboard")
+    object AnimationScreen : AppRoutes("animationScreen")
+    object SettingsScreen : AppRoutes("settingsScreen")
 }

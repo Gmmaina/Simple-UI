@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -24,15 +25,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.simpleui.navigation.BottomNavigationBar
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun ForgotPasswordScreen(preFilledEmail: String) {
+fun ForgotPasswordScreen(navController: NavController, preFilledEmail: String) {
 
     var email by remember {
         mutableStateOf(preFilledEmail)
@@ -51,13 +55,16 @@ fun ForgotPasswordScreen(preFilledEmail: String) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(start = 10.dp, end = 10.dp)
-            .windowInsetsPadding(WindowInsets.systemBars)
-    ) {
+    )
+
+    Scaffold (
+        bottomBar = { BottomNavigationBar(navController) }
+    ){ paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp),
+                .padding(paddingValues)
+                .padding(start = 10.dp, end = 10.dp)
+                .windowInsetsPadding(WindowInsets.systemBars),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -110,10 +117,11 @@ fun ForgotPasswordScreen(preFilledEmail: String) {
             }
         }
     }
+
 }
 
 @Preview
 @Composable
 private fun ForgotPasswordScreenPreview() {
-    ForgotPasswordScreen(preFilledEmail = "")
+    ForgotPasswordScreen(navController = NavController(LocalContext.current),preFilledEmail = "")
 }

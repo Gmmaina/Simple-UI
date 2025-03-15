@@ -18,18 +18,22 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.simpleui.data.User
+import com.example.simpleui.navigation.BottomNavigationBar
 import com.example.simpleui.viewmodel.UserViewModel
 
 @Composable
-fun AdminDashboard(viewModel: UserViewModel) {
+fun AdminDashboard(navController: NavController, viewModel: UserViewModel) {
 
     val users = viewModel.getUsers().observeAsState(emptyList()).value
 
@@ -37,19 +41,23 @@ fun AdminDashboard(viewModel: UserViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.LightGray)
-            .windowInsetsPadding(WindowInsets.systemBars)
     )
-    LazyColumn(
-        modifier = Modifier
-            .windowInsetsPadding(WindowInsets.systemBars)
-    ) {
-        items(users.size) { index ->
-            UserList(users[index]) { userId ->
-                viewModel.deleteUser(userId)
-            }
+    Scaffold(
+        bottomBar = {BottomNavigationBar(navController)}
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+        ) {
+            items(users.size) { index ->
+                UserList(users[index]) { userId ->
+                    viewModel.deleteUser(userId)
+                }
 
+            }
         }
     }
+
 }
 
 @Composable

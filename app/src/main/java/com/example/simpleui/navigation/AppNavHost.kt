@@ -6,9 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.simpleui.screens.AdminDashboard
+import com.example.simpleui.screens.AnimationScreen
 import com.example.simpleui.screens.ForgotPasswordScreen
 import com.example.simpleui.screens.HomeScreen
 import com.example.simpleui.screens.LoginScreen
+import com.example.simpleui.screens.SettingsScreen
 import com.example.simpleui.screens.SignUpScreen
 import com.example.simpleui.screens.SplashScreen
 
@@ -30,14 +32,20 @@ fun AppNavHost() {
         }
         composable(AppRoutes.ForgotPasswordScreen.route + "/{email}") { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email") ?: ""
-            ForgotPasswordScreen(email)
+            ForgotPasswordScreen(navController,email)
         }
         composable(AppRoutes.HomeScreen.route + "/{email}") { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email") ?: ""
             HomeScreen(email)
         }
         composable(AppRoutes.AdminDashboard.route) {
-            AdminDashboard(viewModel = viewModel())
+            AdminDashboard(navController,viewModel = viewModel())
+        }
+        composable(AppRoutes.AnimationScreen.route) {
+            AnimationScreen(navController)
+        }
+        composable(AppRoutes.SettingsScreen.route) {
+            SettingsScreen(navController)
         }
     }
 }
