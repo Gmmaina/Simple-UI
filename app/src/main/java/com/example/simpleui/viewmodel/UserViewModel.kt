@@ -115,7 +115,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                 loginMessage = "Login Successful"
                 isSuccess = true
                 delay(2000)
-                navController.navigate(AppRoutes.AdminDashboard.route) {
+                navController.navigate(AppRoutes.AdminDashboard.route + "/${email}") {
                     popUpTo(AppRoutes.LoginScreen.route) {
                         inclusive = true
                     }

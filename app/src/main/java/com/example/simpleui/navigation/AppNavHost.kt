@@ -32,14 +32,15 @@ fun AppNavHost() {
         }
         composable(AppRoutes.ForgotPasswordScreen.route + "/{email}") { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email") ?: ""
-            ForgotPasswordScreen(navController,email)
+            ForgotPasswordScreen(navController, email)
         }
         composable(AppRoutes.HomeScreen.route + "/{email}") { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email") ?: ""
-            HomeScreen(email)
+            HomeScreen(navController, email)
         }
-        composable(AppRoutes.AdminDashboard.route) {
-            AdminDashboard(navController,viewModel = viewModel())
+        composable(AppRoutes.AdminDashboard.route + "/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            AdminDashboard(navController, viewModel = viewModel(), email)
         }
         composable(AppRoutes.AnimationScreen.route) {
             AnimationScreen(navController)

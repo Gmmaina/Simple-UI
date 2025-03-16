@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -30,6 +27,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -40,14 +38,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.simpleui.navigation.BottomNavigationBar
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(userEmail: String?) {
+fun HomeScreen(navController: NavController, userEmail: String?) {
     val email = userEmail ?: ""
 
     val languages = listOf("Kotlin", "Java", "React", "Android", "Python")
@@ -103,140 +105,145 @@ fun HomeScreen(userEmail: String?) {
             }
         }
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray)
-                .windowInsetsPadding(WindowInsets.systemBars),
-        ) {
-            Row {
-                IconButton(
-                    onClick = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    content = {
-                        Icon(
-                            Icons.Filled.Menu, "Menu"
-                        )
-                    }
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    selectedLanguage.value,
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(10.dp)
-                )
-            }
-
-            Button(
-                { openDialog.value = true },
-                colors = buttonColors,
-                border = BorderStroke(1.dp, color = Color.LightGray),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 100.dp)
-            ) {
-                Text(
-                    "Click Me",
-                    fontSize = 22.sp
-                )
-            }
-
-            if (openDialog.value) {
-                AlertDialog(
-                    onDismissRequest = { openDialog.value = false },
-                    title = { Text(text = "Payment Confirmation!") },
-                    text = { Text("Send Money to.") },
-                    confirmButton = {
-                        Button(
-                            { openDialog.value = false },
-                            colors = buttonColors,
-                            border = BorderStroke(1.dp, color = Color.LightGray)
-                        ) {
-                            Text(
-                                text = "Confirm",
-                                fontSize = 22.sp
-                            )
-                        }
-                    },
-                    dismissButton = {
-                        Button(
-                            { openDialog.value = false },
-                            colors = buttonColors,
-                            border = BorderStroke(1.dp, color = Color.LightGray)
-                        ) {
-                            Text(
-                                text = "Cancel",
-                                fontSize = 22.sp
-                            )
-                        }
-                    },
-                    containerColor = Color.DarkGray,
-                    titleContentColor = Color.LightGray,
-                    textContentColor = Color.LightGray,
-                    iconContentColor = Color.LightGray
-                )
-            }
-
-            Column(
+        Scaffold(
+            Modifier.background(Color.LightGray),
+            bottomBar = { BottomNavigationBar(navController) }
+        ) { paddingValues ->
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(paddingValues)
             ) {
-                Text(
-                    text = "Hello Buddy $email"
-                )
-                Column {
-                    Text(
-                        text = selectedOption
+                Row {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        },
+                        content = {
+                            Icon(
+                                Icons.Filled.Menu, "Menu"
+                            )
+                        }
                     )
-                    Column(modifier = Modifier.selectableGroup()) {
-                        languages.forEach { text ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        selectedLanguage.value,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+
+                Button(
+                    { openDialog.value = true },
+                    colors = buttonColors,
+                    border = BorderStroke(1.dp, color = Color.LightGray),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 100.dp)
+                ) {
+                    Text(
+                        "Click Me",
+                        fontSize = 22.sp
+                    )
+                }
+
+                if (openDialog.value) {
+                    AlertDialog(
+                        onDismissRequest = { openDialog.value = false },
+                        title = { Text(text = "Payment Confirmation!") },
+                        text = { Text("Send Money to.") },
+                        confirmButton = {
+                            Button(
+                                { openDialog.value = false },
+                                colors = buttonColors,
+                                border = BorderStroke(1.dp, color = Color.LightGray)
                             ) {
-                                RadioButton(
-                                    selected = (text == selectedOption),
-                                    onClick = {
-                                        onOptionSelected(text)
-                                    }
-                                )
                                 Text(
-                                    text = text,
+                                    text = "Confirm",
+                                    fontSize = 22.sp
                                 )
+                            }
+                        },
+                        dismissButton = {
+                            Button(
+                                { openDialog.value = false },
+                                colors = buttonColors,
+                                border = BorderStroke(1.dp, color = Color.LightGray)
+                            ) {
+                                Text(
+                                    text = "Cancel",
+                                    fontSize = 22.sp
+                                )
+                            }
+                        },
+                        containerColor = Color.DarkGray,
+                        titleContentColor = Color.LightGray,
+                        textContentColor = Color.LightGray,
+                        iconContentColor = Color.LightGray
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Hello Buddy $email"
+                    )
+                    Column {
+                        Text(
+                            text = selectedOption
+                        )
+                        Column(modifier = Modifier.selectableGroup()) {
+                            languages.forEach { text ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = (text == selectedOption),
+                                        onClick = {
+                                            onOptionSelected(text)
+                                        }
+                                    )
+                                    Text(
+                                        text = text,
+                                    )
+                                }
                             }
                         }
                     }
+
                 }
 
-            }
+                FloatingActionButton(
+                    onClick = {
 
-            FloatingActionButton(
-                onClick = {
-
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = "Add",
-                    tint = Color.Black,
-                    modifier = Modifier.size(24.dp)
-                )
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = "Add",
+                        tint = Color.Black,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }
+
 }
 
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(userEmail = "test@test.com")
+    HomeScreen(navController = NavHostController(LocalContext.current), userEmail = "")
 }

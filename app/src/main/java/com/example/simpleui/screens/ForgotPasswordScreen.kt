@@ -57,9 +57,9 @@ fun ForgotPasswordScreen(navController: NavController, preFilledEmail: String) {
             .background(Color.White)
     )
 
-    Scaffold (
+    Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
-    ){ paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -123,5 +123,5 @@ fun ForgotPasswordScreen(navController: NavController, preFilledEmail: String) {
 @Preview
 @Composable
 private fun ForgotPasswordScreenPreview() {
-    ForgotPasswordScreen(navController = NavController(LocalContext.current),preFilledEmail = "")
+    ForgotPasswordScreen(navController = NavController(LocalContext.current), preFilledEmail = "")
 }
